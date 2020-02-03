@@ -4,7 +4,7 @@ A quick script in order to calling some api in particular time schedule from ser
 
 ## Usage
 
-It's Pretty straight forward
+It's Pretty straight forward!
 
 1. Register [ ./sw.js ](./sw.js)
 2. Change `SCHEDULE` and `API_TO_CALL` inside the [ ./sw.js ](./sw.js)
@@ -65,4 +65,4 @@ const API_TO_CALL = {
 };
 ```
 
-![sw-schedule-caller](./assets/docIMG.png)
+![](./assets/docIMG.PNG)
