@@ -2,7 +2,8 @@ const SCHEDULE = { from: "02:10:00:00", till: "06:50:00:00" }; // hh:mm:ss:ms 24
 
 const API_TO_CALL = {
   from: {
-    url: "http://127.0.0.1:6800/jsonrpc",
+    // url: "http://127.0.0.1:6800/jsonrpc",
+    url: "http://www.mocky.io/v2/5e39a4f73200006800ddfc39",
 
     options: {
       method: "POST",
@@ -25,7 +26,8 @@ const API_TO_CALL = {
   },
 
   till: {
-    url: "http://127.0.0.1:6800/jsonrpc",
+    // url: "http://127.0.0.1:6800/jsonrpc",
+    url: "http://www.mocky.io/v2/5e39a4f73200006800ddfc39",
 
     options: {
       method: "POST",
@@ -69,10 +71,15 @@ const setCallAt = (api, time) => {
       mSecond,
     ) - now;
 
-  setTimeout(() => {
-    log(`Timeout-test:: for "${time}"`);
+  if (millisTill < 0) millisTill += 86400000;
 
-    const requestCaller = call(api.url, api.options)
+  log(
+    `Timeout-test:: for "${time}" after "${msToTime(millisTill)}" later`,
+    "gold",
+  );
+
+  setTimeout(() => {
+    call(api.url, api.options)
       .then(() => {
         log(
           `Timeout-test:: pass(✓) Successfully setInterval for "${time}"`,
@@ -82,12 +89,12 @@ const setCallAt = (api, time) => {
         setInterval(() => {
           log(`Interval:: for ${time}`, "cyan");
 
-          requestCaller();
+          call(api.url, api.options);
         }, 86400000);
       })
       .catch(err =>
         console.error(
-          `ScheduleCaller: Timeout-test:: fail(x) failed to setInterval on "${time}" ${err}`,
+          `ScheduleCaller: Timeout-test:: Fail(x) failed to setInterval on "${time}" ${err}`,
         ),
       );
   }, millisTill);
@@ -108,6 +115,19 @@ function log(message, color = "#bada55") {
     `%c ScheduleCaller: ${message}`,
     `background: #222; color: ${color}`,
   );
+}
+
+function msToTime(duration) {
+  let milliseconds = parseInt((duration % 1000) / 100),
+    seconds = Math.floor((duration / 1000) % 60),
+    minutes = Math.floor((duration / (1000 * 60)) % 60),
+    hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+
+  hours = hours < 10 ? "0" + hours : hours;
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  seconds = seconds < 10 ? "0" + seconds : seconds;
+
+  return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
 }
 
 function call(url, options, fetcher = fetch) {
